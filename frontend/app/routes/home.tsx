@@ -1,5 +1,8 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
+import { PersonnelTable } from "~/components/personnelTable";
+import { PersonnelAdd } from "~/components/createStaff";
+import { GroupAdd } from "~/components/CreateGroup";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +12,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <Welcome />;
+  return <PersonnelTable />;
 }
