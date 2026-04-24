@@ -2,7 +2,7 @@ import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
 import { PersonnelTable } from "~/components/personnelTable";
 import { PersonnelAdd } from "~/components/createStaff";
-import { GroupAdd } from "~/components/CreateGroup";
+import { GroupAdd } from "~/components/createGroup";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,5 +12,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <PersonnelTable />;
+  return <GroupAdd />;
 }

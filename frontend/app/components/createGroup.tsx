@@ -5,24 +5,32 @@ import { Button } from "@base-ui/react/button"
 
 export function GroupAdd() {
     const { options, createGroup } = useGroups();
-    const [form, setForm] = useState({ name: "" })
+    const [form, setForm] = useState({ name: "" });
+    const [error, setError] = useState('');
 
   const handleSubmit = async () => {
-    await createGroup(form.name)
+
+    if (options.some((options) => options.group === form.name)) {
+      setError('Den gruppe findes allerede');
+      return;
+    };
+
+    await createGroup(form)
     setForm({ name: "" })
-  }
+  };
 
   return (
     <div>
     
-        <div className="flex gap-2 mb-4">
+        <form className="flex gap-2 mb-4">
             <Input
                 placeholder="Gruppe"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
+            {error && <span style={{ color: 'red' }}>{error}</span>}
             <Button onClick={handleSubmit}>Tilføj</Button>
-        </div>
+        </form>
 
     </div>
   )
