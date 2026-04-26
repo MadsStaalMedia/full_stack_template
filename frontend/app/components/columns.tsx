@@ -1,6 +1,6 @@
 import { Button } from "./ui/button"
 import type { ColumnDef } from "@tanstack/react-table"
-import { usePersonnel } from "~/services/apiService"
+import { usePersonnel, useGroups } from "~/services/apiService"
 
 export type Staff = {
     id: string
@@ -38,7 +38,8 @@ export const columnsStaff = (
 ]
 
 export const columnsGroups = (
-    changeGroup: (id: string, status: "active" | "inactive") => void
+    removeGroup: (id: string, staffData: Staff[]) => void,
+    staffData: Staff[]
     ): ColumnDef<Group, any>[] => [
         { accessorKey: "group", header: "Group" },
         { id: "actions", header: "Action",
@@ -46,10 +47,9 @@ export const columnsGroups = (
                 const group = row.original;
                 return (
                     <Button
-                        variant={group.status === "active" ? "destructive" : "default"}
-                        onClick={() => changeGroup(group.id,group.status === "active" ? "inactive" : "active")}
+                        onClick={() => removeGroup(group.id, staffData)}
                     >
-                        Deaktiver
+                        Slet
                     </Button>
                 )
             }

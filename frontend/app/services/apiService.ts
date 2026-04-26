@@ -40,7 +40,6 @@ export function usePersonnel() {
         try {
             const response = await axios.post("https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/personnel.json", newStaff)
             const createdStaff: Staff = { ...newStaff, id: response.data.name };
-            console.log(createdStaff);
             setData((prev) => [...prev, createdStaff]);
         } catch (err) {
             setError("Kunne ikke oprette personale");
@@ -70,18 +69,14 @@ export function useGroups() {
   const fetchGroups = async () => {
     try {
       const response = await axios.get("https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/groups.json");
-      console.log(response.data);
     
       const raw = response.data as unknown as Record<string, { group: string; status: "active" | "inactive" }>;
-      console.log(raw);
 
       const mappedEntries = Object.keys(raw).map(id => ({
         id,
         group: raw[id].group,
         status: raw[id].status
       }));
-
-      console.log(mappedEntries[0]);
 
       setOptions(mappedEntries);
         
@@ -94,7 +89,6 @@ export function useGroups() {
 
   useEffect(() => {
     fetchGroups();
-    console.log(options);
     }, []);
 
   const createGroup = async (newGroup: Omit<Group, "id">) => {
@@ -110,13 +104,32 @@ export function useGroups() {
     
   };
 
-  const changeGroup = async (id: string, status: "active" | "inactive") => {
+  const deleteGroup = async (id: string) => {
+    await axios.delete(
+      `https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/groups/${id}.json`
+    );
+  }
+
+  const removeGroup = async (id: string, staffData: Staff[]) => {
+    const groupBeingDeleted = options.find(g => g.id === id);
+  
+    const hasActiveStaff = staffData.some(
+      staff => staff.group === groupBeingDeleted?.group && staff.status === "active"
+    );
+
+    if (hasActiveStaff) {
+      setError("Gruppe kan ikke slettes. Der er stadig aktivt personale i gruppen.");
+      return;
+    };
+
     try {
-      const response = await axios.put(`https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/groups/${id}/status.json`, JSON.stringify(status));
+      await deleteGroup(id);
+      setOptions(prev => prev.filter(group => group.id !== id));
+      setError(null);
     } catch (err) {
       console.error(err);
-    }
+    };
   };
 
-  return { options, loading, error, createGroup, changeGroup };
+  return { options, loading, error, createGroup, removeGroup };
 }

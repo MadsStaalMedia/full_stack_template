@@ -12,5 +12,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <PersonnelTable />;
+  return <GroupAdd />;
 }

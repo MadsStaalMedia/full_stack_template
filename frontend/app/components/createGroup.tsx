@@ -5,18 +5,19 @@ import { Button } from "@base-ui/react/button"
 
 export function GroupAdd() {
     const { options, createGroup } = useGroups();
-    const [form, setForm] = useState({ name: "" });
+    const [form, setForm] = useState({ group: "" });
     const [error, setError] = useState('');
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (options.some((options) => options.group === form.name)) {
+    if (options.some((options) => options.group === form.group)) {
       setError('Gruppen findes allerede');
       return;
     };
 
     await createGroup(form)
-    setForm({ name: "" })
+    setForm({ group: "" })
   };
 
   return (
@@ -27,8 +28,8 @@ export function GroupAdd() {
               required
               minLength={1}
               placeholder="Gruppe"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              value={form.group}
+              onChange={(e) => setForm({ ...form, group: e.target.value })}
             />
             {error && <span style={{ color: 'red' }}>{error}</span>}
             <Button type="submit">Tilføj</Button>
