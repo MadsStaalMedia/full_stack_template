@@ -45,9 +45,17 @@ export function usePersonnel() {
         } catch (err) {
             setError("Failed to create staff")
         }
-    }
+    };
 
-    return { data, loading, error, createStaff }
+    const changeStaff = async (id: string, status: "active" | "inactive") => {
+      try {
+        const response = await axios.put(`https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/personnel/${id}/status.json`, JSON.stringify(status));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    return { data, loading, error, createStaff, changeStaff }
 
 }
 

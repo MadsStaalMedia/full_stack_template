@@ -1,14 +1,18 @@
 import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
-import { columns } from "./columns";
+import { columns, type Staff } from "./columns";
 import { usePersonnel } from "~/services/apiService";
 
+
+
 export function PersonnelTable() {
-    const { data, loading, error } = usePersonnel()
+    const { data, loading, error, changeStaff } = usePersonnel()
+
+    const tableColumns = columns(changeStaff);
 
     const table = useReactTable({
         data,
-        columns,
+        columns: tableColumns,
         getCoreRowModel: getCoreRowModel()
     })
 

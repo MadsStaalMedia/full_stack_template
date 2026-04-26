@@ -11,7 +11,7 @@ export function GroupAdd() {
   const handleSubmit = async () => {
 
     if (options.some((options) => options.group === form.name)) {
-      setError('Den gruppe findes allerede');
+      setError('Gruppen findes allerede');
       return;
     };
 
@@ -22,14 +22,16 @@ export function GroupAdd() {
   return (
     <div>
     
-        <form className="flex gap-2 mb-4">
+        <form className="flex gap-2 mb-4" onSubmit={handleSubmit}>
             <Input
-                placeholder="Gruppe"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+              minLength={1}
+              placeholder="Gruppe"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
             {error && <span style={{ color: 'red' }}>{error}</span>}
-            <Button onClick={handleSubmit}>Tilføj</Button>
+            <Button type="submit">Tilføj</Button>
         </form>
 
     </div>
