@@ -1,19 +1,36 @@
-import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
+import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel, getFilteredRowModel, type SortingState, type ColumnFiltersState } from "@tanstack/react-table";
+import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
-import { columns, type Staff } from "./columns";
+import { columnsStaff, type Staff } from "./columns";
 import { usePersonnel } from "~/services/apiService";
+import { useMemo } from "react";
 
 
 
 export function PersonnelTable() {
     const { data, loading, error, changeStaff } = usePersonnel()
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-    const tableColumns = columns(changeStaff);
+    const filteredData = useMemo(
+        () => data.filter((staff) => staff.status === "active"),
+        [data]
+    );
+
+    const tableColumns = columnsStaff(changeStaff);
 
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns: tableColumns,
-        getCoreRowModel: getCoreRowModel()
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        state: {
+        sorting,
+        columnFilters,
+    }
     })
 
     if (loading) return <div>Please wait...</div>
@@ -22,6 +39,12 @@ export function PersonnelTable() {
     return (
         <div>
 
+            <input
+                placeholder="Search..."
+                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                onChange={e => table.getColumn("name")?.setFilterValue(e.target.value)}
+            />
+
             <Table>
 
                 <TableHeader>
@@ -29,13 +52,18 @@ export function PersonnelTable() {
                         <TableRow key={headerGroup.id}>
                         {headerGroup.headers.map((header) => {
                             return (
-                            <TableHead key={header.id}>
-                                {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                    )}
+                            <TableHead 
+                            key={header.id}
+                            onClick={header.column.getToggleSortingHandler()}
+                            style={{ cursor: "pointer" }}
+                            >
+                            
+                                <div>
+                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                            
+                                    {header.column.getIsSorted() === "asc" ? " ↑" : header.column.getIsSorted() === "desc" ? " ↓" : " ↕"}
+                                </div>
+
                             </TableHead>
                             )
                         })}
@@ -58,7 +86,7 @@ export function PersonnelTable() {
                         ))
                     ) : (
                         <TableRow>
-                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                        <TableCell colSpan={columnsStaff.length} className="h-24 text-center">
                             No results.
                         </TableCell>
                         </TableRow>

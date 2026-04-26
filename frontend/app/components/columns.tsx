@@ -16,13 +16,12 @@ export type Group = {
     status: "active" | "inactive"
 }
 
-export const columns = (
+export const columnsStaff = (
     changeStaff: (id: string, status: "active" | "inactive") => void
     ): ColumnDef<Staff, any>[] => [
         { accessorKey: "name", header: "Name" },
         { accessorKey: "email", header: "Email" },
         { accessorKey: "group", header: "Group" },
-        { accessorKey: "status", header: "Status"},
         { id: "actions", header: "Action",
             cell: ({ row }) => {
                 const group = row.original;
@@ -30,7 +29,28 @@ export const columns = (
                     <Button
                         variant={group.status === "active" ? "destructive" : "default"}
                         onClick={() => changeStaff(group.id,group.status === "active" ? "inactive" : "active")}
-                    />
+                    >
+                        Deaktiver
+                    </Button>
+                )
+            }
+        }
+]
+
+export const columnsGroups = (
+    changeGroup: (id: string, status: "active" | "inactive") => void
+    ): ColumnDef<Group, any>[] => [
+        { accessorKey: "group", header: "Group" },
+        { id: "actions", header: "Action",
+            cell: ({ row }) => {
+                const group = row.original;
+                return (
+                    <Button
+                        variant={group.status === "active" ? "destructive" : "default"}
+                        onClick={() => changeGroup(group.id,group.status === "active" ? "inactive" : "active")}
+                    >
+                        Deaktiver
+                    </Button>
                 )
             }
         }

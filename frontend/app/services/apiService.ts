@@ -25,7 +25,7 @@ export function usePersonnel() {
 
         setData(mappedEntries);
       } catch (err) {
-        setError("Failed to fetch personnel")
+        setError("Kunne ikke hente personale");
       } finally {
         setLoading(false);
       }
@@ -43,13 +43,16 @@ export function usePersonnel() {
             console.log(createdStaff);
             setData((prev) => [...prev, createdStaff]);
         } catch (err) {
-            setError("Failed to create staff")
+            setError("Kunne ikke oprette personale");
         }
     };
 
     const changeStaff = async (id: string, status: "active" | "inactive") => {
       try {
         const response = await axios.put(`https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/personnel/${id}/status.json`, JSON.stringify(status));
+        setData(prev => prev.map(staff =>
+        staff.id === id ? { ...staff, status } : staff
+    ));
       } catch (err) {
         console.error(err);
       }
@@ -62,6 +65,7 @@ export function usePersonnel() {
 export function useGroups() {
   const [options, setOptions] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null)
 
   const fetchGroups = async () => {
     try {
@@ -82,7 +86,7 @@ export function useGroups() {
       setOptions(mappedEntries);
         
     } catch (err) {
-      console.error(err)
+      setError("Kunne ikke hente personalegrupper")
     }finally {
       setLoading(false);
     }
@@ -101,10 +105,18 @@ export function useGroups() {
       const createdGroup: Group = { ...newGroup, id: response.data.name, status: "active" };
       setOptions((prev) => [...prev, createdGroup]);
     } catch (err) {
-      console.error(err);
+        setError("Kunne ikke oprette personalegruppe");
     }
     
   };
 
-  return { options, loading, createGroup };
+  const changeGroup = async (id: string, status: "active" | "inactive") => {
+    try {
+      const response = await axios.put(`https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/groups/${id}/status.json`, JSON.stringify(status));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return { options, loading, error, createGroup, changeGroup };
 }
