@@ -1,4 +1,10 @@
+import { usePersonnel, useGroups } from "~/services/apiService";
+
 export function Landing() {
+    const { data } = usePersonnel();
+    const { options } = useGroups();
+
+
     return (
         <div>
             <h1 className="text-4xl font-bold mb-5">Velkommen til din Personaleoversigt</h1>
@@ -8,14 +14,22 @@ export function Landing() {
             </p>
 
             <h2 className="text-2xl font-bold">
-                Hvordan sætter man gang i det?
+                Hold styr på dit personale
             </h2>
 
-            <p>
-                Det er nemt nok. Bare opret en personalegruppe og opret derefter personalet i den gruppe.
-            </p>
+            <div className="my-4">
+
+                <p>Du har {data.filter(staff => staff.status === "active").length} aktive personalemedlemmer.</p>
+                <p>Du har {options.length} personalegrupper.</p>
+            
+            </div>
+
+            <p>Ønsker du at tilføje eller slette personalegrupper, kan du trykke på Personalegrupper knappen til venstre. </p>
+
+            <p>Ønsker du at tilføje eller deaktivere personale, kan du trykke på Personale knappen til venstre.</p>
 
 
         </div>
+        
     );
 }
