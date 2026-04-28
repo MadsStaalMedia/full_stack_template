@@ -7,7 +7,7 @@ export function Landing() {
 
     return (
         <div>
-            <h1 className="text-4xl font-bold mb-5">Velkommen til din Personaleoversigt</h1>
+            <h1 className="text-4xl font-bold mb-5">Velkommen til Persigt</h1>
 
             <p className="mb-10">
                 Her kan du oprette dit personale og skabe et nemt overblik.
