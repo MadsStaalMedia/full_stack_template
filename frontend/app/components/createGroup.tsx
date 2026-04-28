@@ -21,10 +21,13 @@ export function GroupAdd() {
   };
 
   return (
-    <div>
+    <div className="border-b border-gray-200 pb-6 mb-6">
+
+      <h2 className="text-2xl font-bold">Opret personalegruppe</h2>
     
-        <form className="flex gap-2 mb-4" onSubmit={handleSubmit}>
+        <form className="flex gap-2 my-4" onSubmit={handleSubmit}>
             <Input
+              className="border border-gray-300 px-3 py-2 outline-none focus:ring-1 focus:ring-black-300"
               required
               minLength={1}
               placeholder="Gruppe"
@@ -32,7 +35,12 @@ export function GroupAdd() {
               onChange={(e) => setForm({ ...form, group: e.target.value })}
             />
             {error && <span style={{ color: 'red' }}>{error}</span>}
-            <Button type="submit">Tilføj</Button>
+            <Button
+            className="border border-gray-300 px-3 py-2 outline-none focus:ring-1 focus:ring-black-300"
+            type="submit"
+            >
+              Tilføj
+            </Button>
         </form>
 
     </div>

@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { NavMenu } from "./components/nav";
+import { Header } from "./components/header";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -34,10 +35,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <NavMenu />
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        <Header />
+        <nav className="fixed left-0 top-0 h-screen w-64 bg-gray-100 border-r border-gray-200 p-4 top-16 h-[calc(100vh-4rem)]">
+          <NavMenu />
+        </nav>
+        <main className="ml-64 flex-1 p-6">
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </main>
       </body>
     </html>
   );

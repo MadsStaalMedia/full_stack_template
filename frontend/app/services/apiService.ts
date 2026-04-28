@@ -4,35 +4,32 @@ import axios from "axios"
 import type { Staff, Group } from "~/components/columns";
 import type { group } from "console";
 
+const fetchPersonnel = async () => {
+
+  const response = await axios.get<Staff[]>("https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/personnel.json");
+
+  const raw = response.data as unknown as Record<string, { name: string; email: string; group: string; status: "active" | "inactive" }>;
+
+  return Object.keys(raw).map(id => ({
+    id,
+    name: raw[id].name,
+    email: raw[id].email,
+    group: raw[id].group,
+    status: raw[id].status
+  }));
+}
+
+
 export function usePersonnel() {
     const [data, setData] = useState<Staff[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
-    const fetchPersonnel = async () => {
-      try {
-        const response = await axios.get<Staff[]>("https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/personnel.json");
-
-        const raw = response.data as unknown as Record<string, { name: string; email: string; group: string; status: "active" | "inactive" }>;
-
-        const mappedEntries = Object.keys(raw).map(id => ({
-          id,
-          name: raw[id].name,
-          email: raw[id].email,
-          group: raw[id].group,
-          status: raw[id].status
-        }));
-
-        setData(mappedEntries);
-      } catch (err) {
-        setError("Kunne ikke hente personale");
-      } finally {
-        setLoading(false);
-      }
-    }
-
     useEffect(() => {
         fetchPersonnel()
+        .then(setData)
+        .catch(() => setError("Kunne ikke hente personale"))
+        .finally(() => setLoading(false));
     }, [])
 
 
@@ -41,6 +38,9 @@ export function usePersonnel() {
             const response = await axios.post("https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/personnel.json", newStaff)
             const createdStaff: Staff = { ...newStaff, id: response.data.name };
             setData((prev) => [...prev, createdStaff]);
+            const updated = await fetchPersonnel();
+            setData(updated)
+      setData(updated);
         } catch (err) {
             setError("Kunne ikke oprette personale");
         }
@@ -96,8 +96,11 @@ export function useGroups() {
 
     try {
       const response = await axios.post("https://mmd26fprojekt-default-rtdb.europe-west1.firebasedatabase.app/groups.json", {...newGroup, status: "active"} );
+
       const createdGroup: Group = { ...newGroup, id: response.data.name, status: "active" };
+
       setOptions((prev) => [...prev, createdGroup]);
+      
     } catch (err) {
         setError("Kunne ikke oprette personalegruppe");
     }
