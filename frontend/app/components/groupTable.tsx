@@ -10,7 +10,7 @@ import { Button } from "@base-ui/react/button"
 
 export function GroupTable() {
     const { options, loading, removeGroup, createGroup } = useGroups();
-    const [form, setForm] = useState({ group: "" });
+    const [form, setForm] = useState({ group: "", status: "active" as "active" | "inactive" });
     const [error, setError] = useState('');
     const { data: staffData } = usePersonnel();
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -37,7 +37,7 @@ export function GroupTable() {
     }
     })
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
     if (options.some((options) => options.group === form.group)) {
@@ -46,7 +46,7 @@ export function GroupTable() {
     };
 
         await createGroup(form)
-        setForm({ group: "" })
+        setForm({ group: "", status: "active" as "active" | "inactive"  })
     };
 
     if (loading) return <div>Vent venligst...</div>
@@ -87,7 +87,7 @@ export function GroupTable() {
 
             <input
                 className="border border-gray-300 px-2 py-1 outline-none focus:ring-1 focus:ring-black-300 text-sm"
-                placeholder="Search..."
+                placeholder="Søg..."
                 value={(table.getColumn("group")?.getFilterValue() as string) ?? ""}
                 onChange={e => table.getColumn("group")?.setFilterValue(e.target.value)}
             />

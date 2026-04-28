@@ -15,7 +15,7 @@ export function PersonnelTable() {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const { options } = useGroups();
-    const [form, setForm] = useState({ name: "", email: "", group: "", status: "active" });
+    const [form, setForm] = useState({ name: "", email: "", group: "", status: "active" as "active" | "inactive" });
 
     const filteredData = useMemo(
         () => data.filter((staff) => staff.status === "active"),
@@ -38,7 +38,7 @@ export function PersonnelTable() {
     }
     })
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (data.some((data) => data.email === form.email)) {
@@ -50,7 +50,7 @@ export function PersonnelTable() {
     }
 
     await createStaff(form);
-    setForm({ name: "", email: "", group: "", status: "active" });
+    setForm({ name: "", email: "", group: "", status: "active" as "active" | "inactive" });
   }
 
     if (loading) return <div>Vent venligst...</div>
