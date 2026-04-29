@@ -126,8 +126,8 @@ export function PersonnelTable() {
                 <input
                     className="border border-gray-300 mt-2 ml-5 px-2 py-1 outline-none focus:ring-1 focus:ring-black-300 text-sm"
                     placeholder="Søg gruppe..."
-                    value={(table.getColumn("gruppe")?.getFilterValue() as string) ?? ""}
-                    onChange={e => table.getColumn("gruppe")?.setFilterValue(e.target.value)}
+                    value={(table.getColumn("group")?.getFilterValue() as string) ?? ""}
+                    onChange={e => table.getColumn("group")?.setFilterValue(e.target.value)}
                 />
 
             </div>
